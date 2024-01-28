@@ -25,7 +25,7 @@ inputs = {
   function_name = dependency.function.outputs.function_name
   routes = [
     {
-        path = "/clients/{proxy+}"
+        path = "/{proxy+}"
         method = "ANY"
     }
   ]
