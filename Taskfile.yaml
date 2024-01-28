@@ -1,0 +1,38 @@
+version: "3"
+
+tasks:
+  client:
+    deps:
+      - build
+    env:
+      AWS_STAGE: local
+    cmds:
+      - ./bin/client/bootstrap
+  clean:
+    cmds:
+      - rm -rf ./bin ./dist
+  build:
+    deps:
+      - clean
+    env:
+      GOARCH: amd64
+      GOOS: linux
+      CGO_ENABLED: 0
+    cmds:
+      - mkdir -p ./bin/client ./dist/client
+      - go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/bootstrap ./client
+      - zip -j ./dist/client/client.zip ./bin/client/bootstrap
+  deploy:
+    deps:
+      - build
+    cmds:
+      - |
+        cd ./terragrunt
+        terragrunt run-all apply --terragrunt-non-interactive
+        cd ..
+  undeploy:
+    cmds:
+      - |
+        cd ./terragrunt
+        terragrunt run-all destroy --terragrunt-non-interactive
+        cd ..
