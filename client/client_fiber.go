@@ -4,10 +4,13 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 func setUp(app *fiber.App, stage string) {
-	fmt.Printf("Setting up %s stage.\n", stage)
+	log.
+		WithField("Stage", stage).
+		Info("Setting up stage.")
 	api := app.Group(fmt.Sprintf("/%s", stage))
 	api.Post("/clients", createClient)
 	api.Get("/clients/:id", getClientByID)

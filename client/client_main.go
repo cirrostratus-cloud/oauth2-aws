@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -16,12 +15,6 @@ var fiberLambda *fiberadapter.FiberLambda
 var app *fiber.App
 
 func init() {
-
-	app = fiber.New()
-	stage := os.Getenv("AWS_STAGE")
-	setUp(app, stage)
-
-	fiberLambda = fiberadapter.New(app)
 	logLevel := os.Getenv("LOG_LEVEL")
 	log.SetOutput(os.Stdout)
 	switch logLevel {
@@ -34,10 +27,16 @@ func init() {
 	default:
 		log.SetLevel(log.InfoLevel)
 	}
+	stage := os.Getenv("AWS_STAGE")
+	app = fiber.New()
+	setUp(app, stage)
+	fiberLambda = fiberadapter.New(app)
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Printf("Processing request path %s.\n", req.RequestContext.Path)
+	log.
+		WithField("Path", req.RequestContext.Path).
+		Info("Processing request.")
 	return fiberLambda.ProxyWithContext(ctx, req)
 }
 
