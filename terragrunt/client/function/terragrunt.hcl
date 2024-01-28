@@ -32,7 +32,11 @@ inputs = {
   })
   environment_variables = {
     LOG_LEVEL = "INFO"
+    AWS_STAGE = local.common_vars.locals.aws_stage
   }
-  zip_location = "${get_parent_terragrunt_dir()}/dist/client/client.zip"
+  module_bucket = local.common_vars.locals.module_bucket
+  file_location = "${get_parent_terragrunt_dir()}/bin/client"
+  zip_location = "${get_parent_terragrunt_dir()}/dist/client"
+  zip_name = "${local.function_name}.zip"
   common_tags = local.common_tags
 }

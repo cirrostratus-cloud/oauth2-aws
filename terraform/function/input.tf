@@ -30,9 +30,24 @@ variable environment_variables {
     description = "Environment variables"
 }
 
+variable module_bucket {
+    type = string
+    description = "Module bucket"
+}
+
+variable file_location {
+    type = string
+    description = "File location"
+}
+
 variable zip_location {
     type = string
     description = "Zip location"
+}
+
+variable zip_name {
+    type = string
+    description = "Zip name"
 }
 
 variable common_tags {

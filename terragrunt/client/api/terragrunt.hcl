@@ -25,12 +25,8 @@ inputs = {
   function_name = dependency.function.outputs.function_name
   routes = [
     {
-        path = "/client"
-        method = "POST"
-    },
-    {
-        path = "/client/{id}"
-        method = "GET"
+        path = "/clients/{proxy+}"
+        method = "ANY"
     }
   ]
   module_name = local.module_name

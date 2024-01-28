@@ -5,6 +5,7 @@ terraform {
 locals {
   iam_role_name = "${var.module_name}-${var.function_name}-execution-role"
   iam_policy_name = "${var.module_name}-${var.function_name}-policy"
+  zip_name_location = "${var.zip_location}/${var.zip_name}"
 }
 
 resource "aws_iam_role" "function" {
@@ -31,19 +32,35 @@ resource "aws_iam_role_policy" "function" {
   policy = var.iam_policy
 }
 
+data "archive_file" "function" {
+  type = "zip"
+  source_dir  = var.file_location
+  output_path = local.zip_name_location
+}
+
+data "aws_s3_bucket" "function" {
+  bucket = var.module_bucket
+}
+
+resource "aws_s3_object" "function" {
+  bucket = data.aws_s3_bucket.function.id
+  key    = var.zip_name
+  source = data.archive_file.function.output_path
+  etag = filemd5(data.archive_file.function.output_path)
+}
+
 resource "aws_lambda_function" "function" {
   function_name = "${var.module_name}-${var.function_name}"
   role = aws_iam_role.function.arn
-  filename = var.zip_location
+  s3_bucket = data.aws_s3_bucket.function.id
+  s3_key    = aws_s3_object.function.key
+  source_code_hash = data.archive_file.function.output_base64sha256
   runtime = "provided.al2"
   handler = "bootstrap"
   memory_size = var.memory_size
   timeout = var.timeout
   environment {
     variables = var.environment_variables
-  }
-  lifecycle {
-    ignore_changes = [environment]
   }
   tags = var.common_tags
 }

@@ -6,6 +6,7 @@ tasks:
       - build
     env:
       AWS_STAGE: local
+      LOG_LEVEL: DEBUG
     cmds:
       - ./bin/client/bootstrap
   clean:
@@ -21,8 +22,10 @@ tasks:
     cmds:
       - mkdir -p ./bin/client ./dist/client
       - go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/bootstrap ./client
-      - zip -j ./dist/client/client.zip ./bin/client/bootstrap
   deploy:
+    env:
+      AWS_STAGE: prod
+      LOG_LEVEL: INFO
     deps:
       - build
     cmds:
