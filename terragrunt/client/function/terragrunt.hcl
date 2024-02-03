@@ -13,6 +13,13 @@ include {
   path = find_in_parent_folders()
 }
 
+dependency log {
+    config_path = "../log"
+    mock_outputs = {
+        log_arn = "log_arn"
+    }
+}
+
 inputs = {
   function_name = local.function_name
   module_name = local.module_name
@@ -26,7 +33,7 @@ inputs = {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ],
-        "Resource": "arn:aws:logs:*:*:*" # TODO: Restrict to resource creating log group outside of this module
+        "Resource": "${dependency.log.outputs.log_arn}:*"
       }
     ]
   })
