@@ -1,5 +1,7 @@
 version: "3"
-
+env:
+  AWS_STAGE: prod
+  LOG_LEVEL: INFO
 tasks:
   client:
     deps:
@@ -23,9 +25,6 @@ tasks:
       - mkdir -p ./bin/client ./dist/client
       - go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/bootstrap ./client
   deploy:
-    env:
-      AWS_STAGE: prod
-      LOG_LEVEL: INFO
     deps:
       - build
     cmds:
@@ -38,4 +37,10 @@ tasks:
       - |
         cd ./terragrunt
         terragrunt run-all destroy --terragrunt-non-interactive
+        cd ..
+  output:
+    cmds:
+      - |
+        cd ./terragrunt
+        terragrunt run-all output --terragrunt-non-interactive
         cd ..
