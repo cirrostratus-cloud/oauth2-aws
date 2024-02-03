@@ -18,11 +18,16 @@ EOF
 remote_state {
   backend = "s3"
   config = {
-    bucket         = local.module_bucket
-    key            = "${path_relative_to_include()}/terraform.tfstate"
-    region         = "${local.aws_region}"
-    encrypt        = true
+    bucket = local.module_bucket
+    key = "${path_relative_to_include()}/terraform.tfstate"
+    region = "${local.aws_region}"
+    encrypt  = true
     dynamodb_table = "${local.module_name}-${local.aws_region}-tfstate-lock"
+    skip_region_validation = true
+    skip_credentials_validation = true
+    skip_metadata_api_check = true
+    skip_requesting_account_id = true
+    skip_s3_checksum = true
   }
 }
 
