@@ -22,8 +22,10 @@ tasks:
       GOOS: linux
       CGO_ENABLED: 0
     cmds:
-      - mkdir -p ./bin/client ./dist/client
-      - go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/bootstrap ./client
+      - |
+        mkdir -p ./bin/client ./dist/client ./bin/user ./dist/user
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/bootstrap ./client
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/bootstrap ./user
   deploy:
     deps:
       - build
