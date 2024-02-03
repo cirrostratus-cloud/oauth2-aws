@@ -3,7 +3,8 @@ terraform {
 }
 
 locals {
-  common_vars  = read_terragrunt_config(find_in_parent_folders("common.hcl"))
+  common_vars = read_terragrunt_config(find_in_parent_folders("common.hcl"))
+  aws_stage = local.common_vars.locals.aws_stage
   common_tags = local.common_vars.locals.common_tags
 }
 
@@ -22,6 +23,7 @@ dependency function {
 inputs = {
   invoke_arn = dependency.function.outputs.invoke_arn
   function_name = dependency.function.outputs.function_name
+  stage_name = local.aws_stage
   routes = [
     {
         path = "/{proxy+}"

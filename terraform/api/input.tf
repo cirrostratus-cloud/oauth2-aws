@@ -3,6 +3,12 @@ variable function_name {
   description = "Function name"
 }
 
+variable stage_name {
+  type        = string
+  description = "Stage name"
+}
+
+
 variable routes {
   type        = list(object({
     path    = string
