@@ -3,7 +3,7 @@ terraform {
 }
 
 locals {
-  api_gateway_name = "${var.module_name}-api-gateway"
+  api_gateway_name = "${var.function_name}-api-gateway"
 }
 
 resource "aws_apigatewayv2_api" "api" {

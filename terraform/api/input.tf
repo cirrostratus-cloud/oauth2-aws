@@ -1,8 +1,3 @@
-variable module_name {
-  type        = string
-  description = "Module name"
-}
-
 variable function_name {
   type        = string
   description = "Function name"
