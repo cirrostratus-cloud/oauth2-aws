@@ -14,6 +14,7 @@ import (
 )
 
 var tableName string = fmt.Sprintf("%s-%s", os.Getenv("CIRROSTRATUS_OAUTH2_MODULE_NAME"), os.Getenv("CIRROSTRATUS_OUTH2_USER_TABLE"))
+var getOneScanLimit int32 = 1
 
 type dynamoUserRepository struct {
 	client *dynamodb.Client
@@ -87,6 +88,7 @@ func (u *dynamoUserRepository) GetUserByEmail(email string) (user.User, error) {
 		FilterExpression:          exp.Filter(),
 		ExpressionAttributeNames:  exp.Names(),
 		ExpressionAttributeValues: exp.Values(),
+		Limit:                     &getOneScanLimit,
 	})
 	if err != nil {
 		log.
