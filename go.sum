@@ -46,6 +46,8 @@ github.com/cirrostratus-cloud/oauth2 v0.1.0 h1:5QKqqTFLzMV3eP2NVtEcPENslfASJZfQF
 github.com/cirrostratus-cloud/oauth2 v0.1.0/go.mod h1:5QCZrV3u14p6EIZCxPswvn95sCOSsozQ51neErL91fg=
 github.com/cirrostratus-cloud/oauth2 v0.1.1 h1:cPdG9aAXPE47vhgtzGCSbDqfvivIHEEYdaLsWsJsKVs=
 github.com/cirrostratus-cloud/oauth2 v0.1.1/go.mod h1:5QCZrV3u14p6EIZCxPswvn95sCOSsozQ51neErL91fg=
+github.com/cirrostratus-cloud/oauth2 v0.1.2 h1:DNUXcOF5yt5V6fQ9X2fk8CGwIyNZY3UBPNjEI3aEYn8=
+github.com/cirrostratus-cloud/oauth2 v0.1.2/go.mod h1:5QCZrV3u14p6EIZCxPswvn95sCOSsozQ51neErL91fg=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

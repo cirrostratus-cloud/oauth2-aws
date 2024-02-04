@@ -32,7 +32,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.7 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
 	github.com/cirrostratus-cloud/common v0.2.1 // indirect
-	github.com/cirrostratus-cloud/oauth2 v0.1.1 // indirect
+	github.com/cirrostratus-cloud/oauth2 v0.1.2 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.17.4 // indirect

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -75,25 +77,35 @@ func (u *dynamoUserRepository) UpdateUser(user user.User) (user.User, error) {
 	return user, nil
 }
 func (u *dynamoUserRepository) GetUserByEmail(email string) (user.User, error) {
-	keyExpression := expression.Key("email").Equal(expression.Value(email))
-	exp, err := expression.NewBuilder().WithKeyCondition(keyExpression).Build()
+	filterExpression := expression.Name("email").Equal(expression.Value(email))
+	exp, err := expression.NewBuilder().WithFilter(filterExpression).Build()
 	if err != nil {
 		return user.User{}, err
 	}
-	output, err := u.client.Query(context.TODO(), &dynamodb.QueryInput{
+	output, err := u.client.Scan(context.TODO(), &dynamodb.ScanInput{
 		TableName:                 &tableName,
+		FilterExpression:          exp.Filter(),
 		ExpressionAttributeNames:  exp.Names(),
 		ExpressionAttributeValues: exp.Values(),
-		KeyConditionExpression:    exp.KeyCondition(),
 	})
 	if err != nil {
+		log.
+			WithField("email", email).
+			Error(err)
 		return user.User{}, err
 	}
 	if len(output.Items) == 0 {
 		return user.User{}, nil
 	}
 	if len(output.Items) > 1 {
-		return user.User{}, fmt.Errorf("more than one user found with email %s", email)
+		err = fmt.Errorf("more than one user found with email %s", email)
+		log.
+			WithFields(log.Fields{
+				"email": email,
+				"count": len(output.Items),
+			}).
+			Error(err)
+		return user.User{}, err
 	}
 	foundedUser, err := user.NewUser(output.Items[0]["id"].(*types.AttributeValueMemberS).Value, output.Items[0]["email"].(*types.AttributeValueMemberS).Value, output.Items[0]["password"].(*types.AttributeValueMemberS).Value)
 	if err != nil {
@@ -109,4 +121,28 @@ func (u *dynamoUserRepository) GetUserByEmail(email string) (user.User, error) {
 	lastName := output.Items[0]["lastName"].(*types.AttributeValueMemberS).Value
 	foundedUser.UpdateUserProfile(firstName, lastName)
 	return foundedUser, nil
+}
+
+func (u *dynamoUserRepository) ExistUserByEmail(email string) (bool, error) {
+	filterExpression := expression.Name("email").Equal(expression.Value(email))
+	exp, err := expression.NewBuilder().WithFilter(filterExpression).Build()
+	if err != nil {
+		return false, err
+	}
+	output, err := u.client.Scan(context.TODO(), &dynamodb.ScanInput{
+		TableName:                 &tableName,
+		FilterExpression:          exp.Filter(),
+		ExpressionAttributeNames:  exp.Names(),
+		ExpressionAttributeValues: exp.Values(),
+	})
+	if err != nil {
+		log.
+			WithField("email", email).
+			Error(err)
+		return false, err
+	}
+	if len(output.Items) == 0 {
+		return false, nil
+	}
+	return true, nil
 }
