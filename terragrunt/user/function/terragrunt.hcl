@@ -34,12 +34,31 @@ inputs = {
           "logs:PutLogEvents"
         ],
         "Resource": "${dependency.log.outputs.log_arn}:*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ],
+        "Resource": "arn:aws:dynamodb:*:*:table/${local.common_vars.locals.module_name}-${get_env("CIRROSTRATUS_OUTH2_USER_TABLE")}"
       }
     ]
   })
   environment_variables = {
     LOG_LEVEL = "INFO"
     AWS_STAGE = local.common_vars.locals.aws_stage
+    CIRROSTRATUS_OAUTH2_MODULE_NAME = local.common_vars.locals.module_name
+    CIRROSTRATUS_OUTH2_USER_TABLE = get_env("CIRROSTRATUS_OUTH2_USER_TABLE")
+    USER_MIN_PASSWORD_LENGTH = get_env("USER_MIN_PASSWORD_LENGTH")
+    USER_UPPER_CASE_REQUIRED = get_env("USER_UPPER_CASE_REQUIRED")
+    USER_LOWER_CASE_REQUIRED = get_env("USER_LOWER_CASE_REQUIRED")
+    USER_NUMBER_REQUIRED = get_env("USER_NUMBER_REQUIRED")
+    USER_SPECIAL_CHARACTER_REQUIRED = get_env("USER_SPECIAL_CHARACTER_REQUIRED")
   }
   module_bucket = local.common_vars.locals.module_bucket
   file_location = "${get_parent_terragrunt_dir()}/bin/user"
