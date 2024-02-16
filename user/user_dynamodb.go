@@ -75,6 +75,27 @@ func (u *dynamoUserRepository) GetUserByID(userID string) (user.User, error) {
 	return userEntity, nil
 }
 func (u *dynamoUserRepository) UpdateUser(user user.User) (user.User, error) {
+	update := expression.
+		Set(expression.Name("enabled"), expression.Value(user.IsEnabled())).
+		Set(expression.Name("firstName"), expression.Value(user.GetFirstName())).
+		Set(expression.Name("lastName"), expression.Value(user.GetLastName())).
+		Set(expression.Name("password"), expression.Value(user.GetPassword()))
+	updateExpression, err := expression.NewBuilder().WithUpdate(update).Build()
+	if err != nil {
+		return user, err
+	}
+	_, err = u.client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: user.GetID()},
+		},
+		TableName:                 &tableName,
+		ExpressionAttributeNames:  updateExpression.Names(),
+		ExpressionAttributeValues: updateExpression.Values(),
+		UpdateExpression:          updateExpression.Update(),
+	})
+	if err != nil {
+		return user, err
+	}
 	return user, nil
 }
 func (u *dynamoUserRepository) GetUserByEmail(email string) (user.User, error) {
