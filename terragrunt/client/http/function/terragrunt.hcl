@@ -14,7 +14,7 @@ include {
 }
 
 dependency log {
-    config_path = "../log"
+    config_path = "${get_parent_terragrunt_dir()}/terragrunt/client/http/log"
     mock_outputs = {
         log_arn = "log_arn"
     }
@@ -42,8 +42,8 @@ inputs = {
     AWS_STAGE = local.common_vars.locals.aws_stage
   }
   module_bucket = local.common_vars.locals.module_bucket
-  file_location = "${get_parent_terragrunt_dir()}/bin/client"
-  zip_location = "${get_parent_terragrunt_dir()}/dist/client"
+  file_location = "${get_parent_terragrunt_dir()}/bin/client/http"
+  zip_location = "${get_parent_terragrunt_dir()}/dist/client/http"
   zip_name = "${local.function_name}.zip"
   common_tags = local.common_tags
 }

@@ -14,7 +14,7 @@ include {
 }
 
 dependency log {
-    config_path = "../log"
+    config_path = "${get_parent_terragrunt_dir()}/terragrunt/user/http/log"
     mock_outputs = {
         log_arn = "log_arn"
     }
@@ -61,8 +61,8 @@ inputs = {
     USER_SPECIAL_CHARACTER_REQUIRED = get_env("USER_SPECIAL_CHARACTER_REQUIRED")
   }
   module_bucket = local.common_vars.locals.module_bucket
-  file_location = "${get_parent_terragrunt_dir()}/bin/user"
-  zip_location = "${get_parent_terragrunt_dir()}/dist/user"
+  file_location = "${get_parent_terragrunt_dir()}/bin/user/http"
+  zip_location = "${get_parent_terragrunt_dir()}/dist/user/http"
   zip_name = "${local.function_name}.zip"
   common_tags = local.common_tags
 }

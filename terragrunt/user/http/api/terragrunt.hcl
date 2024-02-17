@@ -13,7 +13,7 @@ include {
 }
 
 dependency function {
-    config_path = "../function"
+    config_path = "${get_parent_terragrunt_dir()}/terragrunt/user/http/function"
     mock_outputs = {
         invoke_arn = "invoke_arn"
         function_name = "function_name"

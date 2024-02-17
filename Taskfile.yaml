@@ -31,9 +31,9 @@ tasks:
       CGO_ENABLED: 0
     cmds:
       - |
-        mkdir -p ./bin/client ./dist/client ./bin/user ./dist/user
-        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/bootstrap ./client
-        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/bootstrap ./user
+        mkdir -p ./bin/client/http ./dist/client/http ./bin/user/http ./dist/user/http
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/http/bootstrap ./client/client_fiber.go ./client/client_main.go
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/http/bootstrap ./user/user_dynamodb.go ./user/user_fiber.go ./user/user_main.go
   deploy:
     deps:
       - build
