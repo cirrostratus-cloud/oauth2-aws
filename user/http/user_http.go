@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	fiberadapter "github.com/awslabs/aws-lambda-go-api-proxy/fiber"
+	"github.com/cirrostratus-cloud/oauth2-aws/user/repository"
 	"github.com/cirrostratus-cloud/oauth2/user"
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
@@ -68,17 +69,17 @@ func init() {
 		panic(err)
 	}
 	dynamodbClient := dynamodb.NewFromConfig(cfg)
-	userRepository := newDynamoUserRepository(dynamodbClient)
+	userRepository := repository.NewDynamoUserRepository(dynamodbClient)
 	createUserService := user.NewCreateUserService(userRepository, minPasswordLength, upperCaseRequired, lowerCaseRequired, numberRequired, specialCharacterRequired)
 	getUserUseCase := user.NewGetUserService(userRepository)
 	updateProfileUseCase := user.NewUpdateUserProfileService(userRepository)
-	userAPI := newUserAPI(createUserService, getUserUseCase,updateProfileUseCase)
+	userAPI := newUserAPI(createUserService, getUserUseCase, updateProfileUseCase)
 	app = fiber.New()
 	userAPI.setUp(app, stage)
 	fiberLambda = fiberadapter.New(app)
 }
 
-func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	log.
 		WithField("Path", req.RequestContext.Path).
 		Info("Processing request.")
@@ -90,6 +91,6 @@ func main() {
 	if stage == "local" {
 		log.Fatal(app.Listen(":3000"))
 	} else {
-		lambda.Start(Handler)
+		lambda.Start(handler)
 	}
 }

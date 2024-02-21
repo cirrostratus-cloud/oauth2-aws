@@ -1,4 +1,4 @@
-package main
+package repository
 
 import (
 	"context"
@@ -20,7 +20,7 @@ type dynamoUserRepository struct {
 	client *dynamodb.Client
 }
 
-func newDynamoUserRepository(client *dynamodb.Client) *dynamoUserRepository {
+func NewDynamoUserRepository(client *dynamodb.Client) *dynamoUserRepository {
 	return &dynamoUserRepository{client: client}
 }
 

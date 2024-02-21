@@ -2,5 +2,6 @@
 .env
 bin
 dist
+temp
 .terragrunt-cache
 .terraform.lock.hcl
