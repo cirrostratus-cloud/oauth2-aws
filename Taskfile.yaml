@@ -8,6 +8,21 @@ includes:
 
 tasks:
   deploy:
+    requires:
+      vars:
+        - AWS_STAGE
+        - LOG_LEVEL
+        - CIRROSTRATUS_OAUTH2_MODULE_NAME
+        - CIRROSTRATUS_OUTH2_USER_TABLE
+        - AWS_DEFAULT_REGION
+        - AWS_REGION
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - USER_MIN_PASSWORD_LENGTH
+        - USER_UPPER_CASE_REQUIRED
+        - USER_LOWER_CASE_REQUIRED
+        - USER_NUMBER_REQUIRED
+        - USER_SPECIAL_CHARACTER_REQUIRED
     deps:
       - client:build
       - user:build
