@@ -2,46 +2,15 @@ version: "3"
 
 dotenv: [".env"]
 
-tasks:
-  client:
-    deps:
-      - build
-    env:
-      AWS_STAGE: local
-      LOG_LEVEL: DEBUG
-    cmds:
-      - ./bin/client/bootstrap
-  user:
-    deps:
-      - build
-    env:
-      AWS_STAGE: local
-      LOG_LEVEL: DEBUG
-    cmds:
-      - ./bin/user/bootstrap
-  clean:
-    cmds:
-      - rm -rf ./bin ./dist
-  build:
-    deps:
-      - clean
-    env:
-      GOARCH: amd64
-      GOOS: linux
-      CGO_ENABLED: 0
-    cmds:
-      - |
-        mkdir -p ./bin/client/http ./dist/client/http ./bin/user/http ./dist/user/http
-        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/http/bootstrap ./client/client_fiber.go ./client/client_main.go
-        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/http/bootstrap ./user/user_dynamodb.go ./user/user_fiber.go ./user/user_main.go
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_changed_email.html -o ./bin/user/http/password_changed_email.html
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovered_email.html -o ./bin/user/http/password_recovered_email.html
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovery_email.html -o ./bin/user/http/password_recovery_email.html
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/welcome_email.html -o ./bin/user/http/welcome_email.html
+includes:
+  client: ./task/Client-Taskfile.yaml
+  user: ./task/User-Taskfile.yaml
 
+tasks:
   deploy:
     deps:
-      - build
+      - client:build
+      - user:build
     cmds:
       - |
         cd ./terragrunt

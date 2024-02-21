@@ -1,0 +1,29 @@
+version: "3"
+
+tasks:
+  serve:
+    deps:
+      - build
+    env:
+      AWS_STAGE: local
+      LOG_LEVEL: DEBUG
+    cmds:
+      - ./bin/user/http/bootstrap
+  clean:
+    cmds:
+      - rm -rf ./bin/user ./dist/user
+  build:
+    deps:
+      - clean
+    env:
+      GOARCH: amd64
+      GOOS: linux
+      CGO_ENABLED: 0
+    cmds:
+      - |
+        mkdir -p ./bin/user/http ./dist/user/http
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/http/bootstrap ./user/user_dynamodb.go ./user/user_fiber.go ./user/user_main.go
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_changed_email.html -o ./bin/user/http/password_changed_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovered_email.html -o ./bin/user/http/password_recovered_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovery_email.html -o ./bin/user/http/password_recovery_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/welcome_email.html -o ./bin/user/http/welcome_email.html

@@ -1,0 +1,25 @@
+version: "3"
+
+tasks:
+  serve:
+    deps:
+      - build
+    env:
+      AWS_STAGE: local
+      LOG_LEVEL: DEBUG
+    cmds:
+      - ./bin/client/http/bootstrap
+  clean:
+    cmds:
+      - rm -rf ./bin/client ./dist/client
+  build:
+    deps:
+      - clean
+    env:
+      GOARCH: amd64
+      GOOS: linux
+      CGO_ENABLED: 0
+    cmds:
+      - |
+        mkdir -p ./bin/client/http ./dist/client/http
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/client/http/bootstrap ./client/client_fiber.go ./client/client_main.go
