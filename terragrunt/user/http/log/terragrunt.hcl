@@ -5,7 +5,7 @@ terraform {
 locals {
   common_vars  = read_terragrunt_config(find_in_parent_folders("common.hcl"))
   module_name = local.common_vars.locals.module_name
-  log_name = "user"
+  log_name = "http-user"
   common_tags = local.common_vars.locals.common_tags
 }
 
