@@ -15,14 +15,14 @@ import (
 type SNSEventBus struct {
 	snsClient      *sns.Client
 	topicArnPrefix string
-	subscribers    map[event.EventName]func(event event.Event) error
+	subscribers    map[event.EventName][]func(event event.Event) error
 }
 
 func NewSNSEventBus(snsClient *sns.Client, topicArnPrefix string) *SNSEventBus {
 	return &SNSEventBus{
 		snsClient:      snsClient,
 		topicArnPrefix: topicArnPrefix,
-		subscribers:    make(map[event.EventName]func(event event.Event) error),
+		subscribers:    make(map[event.EventName][]func(event event.Event) error),
 	}
 }
 
@@ -55,7 +55,25 @@ func (e *SNSEventBus) Publish(eventName event.EventName, event event.Event) erro
 }
 
 func (e *SNSEventBus) Subscribe(eventName event.EventName, suscriber func(event event.Event) error) error {
-	e.subscribers[eventName] = suscriber
+	if e.subscribers[eventName] == nil {
+		e.subscribers[eventName] = make([]func(event event.Event) error, 0)
+	}
+	e.subscribers[eventName] = append(e.subscribers[eventName], suscriber)
+	return nil
+}
+
+func (e *SNSEventBus) triggerAll(eventName event.EventName, event event.Event) error {
+	for _, subscriber := range e.subscribers[eventName] {
+		err := subscriber(event)
+		if err != nil {
+			log.WithFields(
+				log.Fields{
+					"error": err,
+				},
+			).Error("Error in subscriber")
+			return err
+		}
+	}
 	return nil
 }
 
@@ -65,23 +83,29 @@ func (e *SNSEventBus) Trigger(eventName event.EventName, payload string) error {
 		var userCreatedEvent user_event.UserCreatedEvent
 		err := json.Unmarshal([]byte(payload), &userCreatedEvent)
 		if err != nil {
+			log.WithFields(
+				log.Fields{
+					"error": err,
+				},
+			).Error("Error unmarshalling user created event")
 			return err
 		}
-		return e.subscribers[eventName](userCreatedEvent)
+		return e.triggerAll(eventName, userCreatedEvent)
+
 	case user_event.UserPasswordChangedEventName:
 		var passwordChangedEvent user_event.PasswordChangedEvent
 		err := json.Unmarshal([]byte(payload), &passwordChangedEvent)
 		if err != nil {
 			return err
 		}
-		return e.subscribers[eventName](passwordChangedEvent)
+		return e.triggerAll(eventName, passwordChangedEvent)
 	case user_event.UserPasswordRecoveredEventName:
 		var userPasswordRecoveredEvent user_event.UserPasswordRecoveredEvent
 		err := json.Unmarshal([]byte(payload), &userPasswordRecoveredEvent)
 		if err != nil {
 			return err
 		}
-		return e.subscribers[eventName](userPasswordRecoveredEvent)
+		return e.triggerAll(eventName, userPasswordRecoveredEvent)
 	default:
 		return errors.New("event not found")
 	}
