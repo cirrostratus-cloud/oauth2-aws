@@ -169,3 +169,16 @@ func (u *dynamoUserRepository) ExistUserByEmail(email string) (bool, error) {
 	}
 	return true, nil
 }
+
+func (u *dynamoUserRepository) DeleteUser(userID string) error {
+	_, err := u.client.DeleteItem(context.TODO(), &dynamodb.DeleteItemInput{
+		TableName: &tableName,
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: userID},
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}

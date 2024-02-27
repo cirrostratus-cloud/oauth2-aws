@@ -59,7 +59,6 @@ func (u *userAPI) createUser(c *fiber.Ctx) error {
 	}
 	user, err := u.createUserUseCase.NewUser(user.CreateUserRequest{
 		Email:     userRequest.Email,
-		Password:  userRequest.Password,
 		FirstName: userRequest.FirstName,
 		LastName:  userRequest.LastName,
 	})
