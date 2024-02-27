@@ -12,7 +12,7 @@ tasks:
       - ./bin/user/http/bootstrap
   clean:
     cmds:
-      - rm -rf ./bin/user ./dist/user
+      - rm -rf ./bin/user ./dist/user ./temp/user
   build:
     deps:
       - clean
@@ -26,7 +26,12 @@ tasks:
         cp ./user/http/* ./temp/user/http
         cp -r ./user/repository ./temp/user/http/repository
         go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/http/bootstrap ./temp/user/http
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_changed_email.html -o ./bin/user/http/password_changed_email.html
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovered_email.html -o ./bin/user/http/password_recovered_email.html
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovery_email.html -o ./bin/user/http/password_recovery_email.html
-        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/welcome_email.html -o ./bin/user/http/welcome_email.html
+        mkdir -p ./bin/user/subscriber ./dist/user/subscriber ./temp/user/subscriber
+        cp ./user/subscriber/* ./temp/user/subscriber
+        cp -r ./user/repository ./temp/user/subscriber/repository
+        cp -r ./user/service ./temp/user/subscriber/service
+        go build -ldflags="-s -w" -tags lambda.norpc -o ./bin/user/subscriber/bootstrap ./temp/user/subscriber
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_changed_email.html -o ./bin/user/subscriber/password_changed_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovered_email.html -o ./bin/user/subscriber/password_recovered_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovery_email.html -o ./bin/user/subscriber/password_recovery_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/welcome_email.html -o ./bin/user/subscriber/welcome_email.html
