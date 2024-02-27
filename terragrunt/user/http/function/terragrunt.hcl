@@ -5,7 +5,7 @@ terraform {
 locals {
   common_vars  = read_terragrunt_config(find_in_parent_folders("common.hcl"))
   module_name = local.common_vars.locals.module_name
-  function_name = "user"
+  function_name = "http-user"
   common_tags = local.common_vars.locals.common_tags
 }
 
@@ -46,6 +46,13 @@ inputs = {
           "dynamodb:Scan"
         ],
         "Resource": "arn:aws:dynamodb:*:*:table/${local.common_vars.locals.module_name}-${get_env("CIRROSTRATUS_OUTH2_USER_TABLE")}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sns:Publish"
+        ],
+        "Resource": "${get_env("TOPIC_ARN_PREFIX")}*"
       }
     ]
   })
@@ -59,10 +66,11 @@ inputs = {
     USER_LOWER_CASE_REQUIRED = get_env("USER_LOWER_CASE_REQUIRED")
     USER_NUMBER_REQUIRED = get_env("USER_NUMBER_REQUIRED")
     USER_SPECIAL_CHARACTER_REQUIRED = get_env("USER_SPECIAL_CHARACTER_REQUIRED")
+    TOPIC_ARN_PREFIX = get_env("TOPIC_ARN_PREFIX")
   }
   module_bucket = local.common_vars.locals.module_bucket
   file_location = "${get_parent_terragrunt_dir()}/bin/user/http"
   zip_location = "${get_parent_terragrunt_dir()}/dist/user/http"
-  zip_name = "${local.function_name}.zip"
+  zip_name = "user.zip"
   common_tags = local.common_tags
 }

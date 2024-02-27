@@ -17,6 +17,7 @@ dependency function {
     mock_outputs = {
         invoke_arn = "invoke_arn"
         function_name = "function_name"
+        lambda_arn = "lambda_arn"
     }
 }
 
