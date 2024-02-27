@@ -1,15 +1,28 @@
 version: "3"
 
 tasks:
-  serve:
+  serve_http:
     deps:
       - build
     env:
       AWS_STAGE: local
       LOG_LEVEL: DEBUG
-      FIBER_PORT: ":3000"
+      USER_HTTP_ADDR: ":3000"
     cmds:
-      - ./bin/user/http/bootstrap
+      - |
+        cd ./bin/user/http
+        ./bootstrap
+  serve_event:
+    deps:
+      - build
+    env:
+      AWS_STAGE: local
+      LOG_LEVEL: DEBUG
+      USER_EVENT_ADDR: ":3001"
+    cmds:
+      - |
+        cd ./bin/user/subscriber
+        ./bootstrap
   clean:
     cmds:
       - rm -rf ./bin/user ./dist/user ./temp/user

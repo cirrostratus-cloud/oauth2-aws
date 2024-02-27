@@ -16,6 +16,7 @@ import (
 	"github.com/cirrostratus-cloud/oauth2-aws/user/repository"
 	user_service "github.com/cirrostratus-cloud/oauth2-aws/user/service"
 	"github.com/cirrostratus-cloud/oauth2/user"
+	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -105,5 +106,31 @@ func handler(ctx context.Context, req events.SQSEvent) {
 }
 
 func main() {
-	lambda.Start(handler)
+	stage := os.Getenv("AWS_STAGE")
+	if stage == "local" {
+		address := os.Getenv("USER_EVENT_ADDR")
+		app := fiber.New()
+		app.Post("/", func(c *fiber.Ctx) error {
+			var payload map[string]interface{}
+			err := json.Unmarshal([]byte(c.Body()), &payload)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"Error": err,
+				}).Error("Error unmarshalling record body")
+				return err
+			}
+			eventName := payload["eventName"]
+			message, err := json.Marshal(payload["message"])
+			if err != nil {
+				log.WithFields(log.Fields{
+					"Error": err,
+				}).Error("Error marshalling message")
+				return err
+			}
+			return snsEventBus.Trigger(event.EventName(eventName.(string)), string(message))
+		})
+		log.Fatal(app.Listen(address))
+	} else {
+		lambda.Start(handler)
+	}
 }

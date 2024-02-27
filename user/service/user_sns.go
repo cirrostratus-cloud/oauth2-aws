@@ -78,6 +78,11 @@ func (e *SNSEventBus) triggerAll(eventName event.EventName, event event.Event) e
 }
 
 func (e *SNSEventBus) Trigger(eventName event.EventName, payload string) error {
+	log.WithFields(log.Fields{
+		"EventName": eventName,
+		"Payload":   payload,
+	}).Info("Triggering event")
+
 	switch eventName {
 	case user_event.UserCreatedEventName:
 		var userCreatedEvent user_event.UserCreatedEvent

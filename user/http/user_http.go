@@ -98,7 +98,8 @@ func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 func main() {
 	stage := os.Getenv("AWS_STAGE")
 	if stage == "local" {
-		log.Fatal(app.Listen(":3000"))
+		address := os.Getenv("USER_HTTP_ADDR")
+		log.Fatal(app.Listen(address))
 	} else {
 		lambda.Start(handler)
 	}
