@@ -55,3 +55,9 @@ variable common_tags {
     description = "Common tags"
 }
 
+variable event_sources_arn {
+    type = list(string)
+    default = []
+    description = "Event sources arn"
+}
+

@@ -44,7 +44,7 @@ data "aws_s3_bucket" "function" {
 
 resource "aws_s3_object" "function" {
   bucket = data.aws_s3_bucket.function.id
-  key    = var.zip_name
+  key    = "${var.function_name}/${var.zip_name}"
   source = data.archive_file.function.output_path
   etag = filemd5(data.archive_file.function.output_path)
 }
@@ -63,4 +63,12 @@ resource "aws_lambda_function" "function" {
     variables = var.environment_variables
   }
   tags = var.common_tags
+}
+
+resource "aws_lambda_event_source_mapping" "function" {
+    count = length(var.event_sources_arn)
+    event_source_arn = var.event_sources_arn[count.index]
+    enabled = true
+    function_name = aws_lambda_function.function.arn
+    batch_size = 1
 }
