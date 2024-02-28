@@ -14,6 +14,7 @@ import (
 	"github.com/cirrostratus-cloud/oauth2-aws/user/repository"
 	user_service "github.com/cirrostratus-cloud/oauth2-aws/user/service"
 	"github.com/cirrostratus-cloud/oauth2/user"
+	"github.com/cirrostratus-cloud/oauth2/util"
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 )
@@ -70,6 +71,11 @@ func init() {
 		log.Fatal("TOPIC_ARN_PREFIX is required")
 		panic("TOPIC_ARN_PREFIX is required")
 	}
+	privateKey := os.Getenv("PRIVATE_KEY")
+	if privateKey == "" {
+		log.Fatal("PRIVATE_KEY is required")
+		panic("PRIVATE_KEY is required")
+	}
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Fatal("Error loading AWS config")
@@ -79,10 +85,12 @@ func init() {
 	snsClient := sns.NewFromConfig(cfg)
 	snsEventBus := user_service.NewSNSEventBus(snsClient, topicArnPrefix)
 	userRepository := repository.NewDynamoUserRepository(dynamodbClient)
-	createUserService := user.NewCreateUserService(userRepository, minPasswordLength, upperCaseRequired, lowerCaseRequired, numberRequired, specialCharacterRequired, snsEventBus)
+	validatePasswordService := user.NewValidatePasswordService(userRepository, upperCaseRequired, lowerCaseRequired, numberRequired, specialCharacterRequired, minPasswordLength)
+	createUserService := user.NewCreateUserService(userRepository, snsEventBus, validatePasswordService)
 	getUserUseCase := user.NewGetUserService(userRepository)
 	updateProfileUseCase := user.NewUpdateUserProfileService(userRepository)
-	userAPI := newUserAPI(createUserService, getUserUseCase, updateProfileUseCase)
+	confirmateEmailService := user.NewConfirmateEmailService(userRepository, snsEventBus, util.FromStringToByteArray(privateKey))
+	userAPI := newUserAPI(createUserService, getUserUseCase, updateProfileUseCase, confirmateEmailService)
 	app = fiber.New()
 	userAPI.setUp(app, stage)
 	fiberLambda = fiberadapter.New(app)

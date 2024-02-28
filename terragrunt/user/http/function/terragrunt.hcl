@@ -67,6 +67,7 @@ inputs = {
     USER_NUMBER_REQUIRED = get_env("USER_NUMBER_REQUIRED")
     USER_SPECIAL_CHARACTER_REQUIRED = get_env("USER_SPECIAL_CHARACTER_REQUIRED")
     TOPIC_ARN_PREFIX = get_env("TOPIC_ARN_PREFIX")
+    PRIVATE_KEY = get_env("PRIVATE_KEY")
   }
   module_bucket = local.common_vars.locals.module_bucket
   file_location = "${get_parent_terragrunt_dir()}/bin/user/http"

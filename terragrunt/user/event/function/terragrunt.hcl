@@ -84,6 +84,9 @@ inputs = {
     CIRROSTRATUS_OUTH2_USER_TABLE = get_env("CIRROSTRATUS_OUTH2_USER_TABLE")
     SES_EMAIL_FROM = get_env("SES_EMAIL_FROM")
     TOPIC_ARN_PREFIX = get_env("TOPIC_ARN_PREFIX")
+    EMAIL_CONFIRMATION_URL = get_env("EMAIL_CONFIRMATION_URL")
+    PRIVATE_KEY = get_env("PRIVATE_KEY")
+    MAX_AGE_IN_SECONDS = get_env("MAX_AGE_IN_SECONDS")
   }
   module_bucket = local.common_vars.locals.module_bucket
   file_location = "${get_parent_terragrunt_dir()}/bin/user/subscriber"

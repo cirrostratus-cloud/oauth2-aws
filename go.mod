@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression v1.6.17
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.27.1
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.1
-	github.com/cirrostratus-cloud/oauth2 v0.2.1
+	github.com/cirrostratus-cloud/oauth2 v0.3.0
 	github.com/gofiber/fiber/v2 v2.52.0
 	github.com/sirupsen/logrus v1.9.3
 )

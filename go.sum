@@ -46,8 +46,8 @@ github.com/awslabs/aws-lambda-go-api-proxy v0.16.1 h1:x4F/VbWYt/f5K9+n3TAqbjFljD
 github.com/awslabs/aws-lambda-go-api-proxy v0.16.1/go.mod h1:31WDgvTzVyra022CWzO6uEZFel9/y7QKaZpUQEqYLr0=
 github.com/cirrostratus-cloud/common v0.4.1 h1:T9Ck/t28rSYoLUVakOp2SNPdg7j1rVXby4WTYKGVN00=
 github.com/cirrostratus-cloud/common v0.4.1/go.mod h1:WsZtknPN30e1VEGmqS6VRGZ2Wh+cIROWmP+Ktafwxvk=
-github.com/cirrostratus-cloud/oauth2 v0.2.1 h1:iD/PD9/8n6trvpokM44kBN3aRsnNwxjaHZqfOEXVQUE=
-github.com/cirrostratus-cloud/oauth2 v0.2.1/go.mod h1:X7x7Q4HuOa2ooycZJ//EPNRxRPkxQtvaG5XtruyMIN8=
+github.com/cirrostratus-cloud/oauth2 v0.3.0 h1:JU7lzW7/p3HsMdMT5yg85DG32y02OKMxDVhi6+/9/GI=
+github.com/cirrostratus-cloud/oauth2 v0.3.0/go.mod h1:X7x7Q4HuOa2ooycZJ//EPNRxRPkxQtvaG5XtruyMIN8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

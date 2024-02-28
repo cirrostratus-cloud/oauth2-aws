@@ -48,3 +48,4 @@ tasks:
         curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovered_email.html -o ./bin/user/subscriber/password_recovered_email.html
         curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/password_recovery_email.html -o ./bin/user/subscriber/password_recovery_email.html
         curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/welcome_email.html -o ./bin/user/subscriber/welcome_email.html
+        curl https://raw.githubusercontent.com/cirrostratus-cloud/oauth2/main/user/mail_confirmation.html -o ./bin/user/subscriber/mail_confirmation.html

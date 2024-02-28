@@ -111,6 +111,13 @@ func (e *SNSEventBus) Trigger(eventName event.EventName, payload string) error {
 			return err
 		}
 		return e.triggerAll(eventName, userPasswordRecoveredEvent)
+	case user_event.UserEmailConfirmedEventName:
+		var userEmailConfirmedEvent user_event.UserEmailConfirmedEvent
+		err := json.Unmarshal([]byte(payload), &userEmailConfirmedEvent)
+		if err != nil {
+			return err
+		}
+		return e.triggerAll(eventName, userEmailConfirmedEvent)
 	default:
 		return errors.New("event not found")
 	}

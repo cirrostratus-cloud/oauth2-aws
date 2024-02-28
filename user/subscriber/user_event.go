@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"regexp"
+	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -16,6 +17,7 @@ import (
 	"github.com/cirrostratus-cloud/oauth2-aws/user/repository"
 	user_service "github.com/cirrostratus-cloud/oauth2-aws/user/service"
 	"github.com/cirrostratus-cloud/oauth2/user"
+	"github.com/cirrostratus-cloud/oauth2/util"
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 )
@@ -52,6 +54,21 @@ func init() {
 		log.Fatal("SES_EMAIL_FROM is required")
 		panic("SES_EMAIL_FROM is required")
 	}
+	emailConfirmationURL := os.Getenv("EMAIL_CONFIRMATION_URL")
+	if emailConfirmationURL == "" {
+		log.Fatal("EMAIL_CONFIRMATION_URL is required")
+		panic("EMAIL_CONFIRMATION_URL is required")
+	}
+	privateKey := os.Getenv("PRIVATE_KEY")
+	if privateKey == "" {
+		log.Fatal("PRIVATE_KEY is required")
+		panic("PRIVATE_KEY is required")
+	}
+	maxAgeInSeconds, err := strconv.Atoi(os.Getenv("MAX_AGE_IN_SECONDS"))
+	if err != nil {
+		log.Fatal("Error parsing MAX_AGE_IN_SECONDS")
+		panic(err)
+	}
 	snsClient := sns.NewFromConfig(cfg)
 	sesClient := ses.NewFromConfig(cfg)
 	dynamodbClient := dynamodb.NewFromConfig(cfg)
@@ -61,6 +78,7 @@ func init() {
 	user.NewNotifyPasswordChangedService(userRepository, mailService, snsEventBus, emailFrom)
 	user.NewNotifyPasswordRecoveredService(userRepository, mailService, snsEventBus, emailFrom)
 	user.NewNotifyUserCreatedService(userRepository, mailService, snsEventBus, emailFrom)
+	user.NewNotifyEmailConfirmationService(userRepository, mailService, snsEventBus, emailFrom, emailConfirmationURL, util.FromStringToByteArray(privateKey), maxAgeInSeconds)
 }
 
 func handler(ctx context.Context, req events.SQSEvent) {

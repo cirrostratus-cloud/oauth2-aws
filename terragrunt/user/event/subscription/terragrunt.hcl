@@ -14,7 +14,7 @@ include {
 
 inputs = {
   module_name = local.module_name
-  topics = ["user_created", "user_password_changed", "user_password_recovered" ]
+  topics = ["user_created", "user_password_changed", "user_password_recovered", "user_email_confirmed" ]
   delivery_policy = jsonencode({
     http = {
       defaultHealthyRetryPolicy = {
